@@ -21,7 +21,7 @@ public class SimpleJDBCRepository {
     private Statement st = null;
 
     private static final String createUserSQL = "INSERT INTO myusers (firstname, lastname, age) VALUES (?, ?, ?)";
-    private static final String updateUserSQL = "UPDATE myusers SET firstname = ?, lastname = ?, age = ? WHERE id = ? RETURNING id, firstname, lastname, age";
+    private static final String updateUserSQL = "UPDATE myusers SET firstname = ?, lastname = ?, age = ? WHERE id = ?";
     private static final String deleteUser = "DELETE FROM myusers WHERE id = ?";
     private static final String findUserByIdSQL = "SELECT * FROM myusers WHERE id = ?";
     private static final String findUserByNameSQL = "SELECT * FROM myusers WHERE firstname = ?";
@@ -34,7 +34,7 @@ public class SimpleJDBCRepository {
             ps.setString(1, user.getFirstName());
             ps.setString(2, user.getLastName());
             ps.setInt(3, user.getAge());
-            ResultSet rs = ps.executeQuery();
+            ps.execute();
             return user.getId();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -99,20 +99,15 @@ public class SimpleJDBCRepository {
         return users;
     }
 
-    public User updateUser() {
+    public User updateUser(User user) {
         try {
             connection = CustomDataSource.getInstance().getConnection();
             ps = connection.prepareStatement(updateUserSQL);
-            ps.setString(1, "firstNameUpdated");
-            ps.setString(2, "lastNameUpdated");
-            ps.setInt(3, 46);
-            ps.setInt(4, 1);
-            ResultSet rs = ps.executeQuery();
-            User user = new User();
-            user.setId(rs.getLong("id"));
-            user.setFirstName(rs.getString("firstname"));
-            user.setLastName(rs.getString("lastname"));
-            user.setAge(rs.getInt("age"));
+            ps.setLong(1, user.getId());
+            ps.setString(2, user.getFirstName());
+            ps.setString(3, user.getLastName());
+            ps.setInt(4, user.getAge());
+            ps.execute();
             return user;
         } catch (SQLException e) {
             throw new RuntimeException(e);
