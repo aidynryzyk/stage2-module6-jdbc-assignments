@@ -30,28 +30,33 @@ public class CustomDataSource implements DataSource {
 
     public static CustomDataSource getInstance() {
         if (instance == null) {
-            try {
-                Class.forName("org.postgresql.Driver");
-                instance = new CustomDataSource(
-                        "org.postgresql.Driver",
-                        "postgresql://localhost:5432/myfirstdb",
-                        "Aidyninho_007",
-                        "aidyninho"
-                );
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException();
-            }
+            instance = new CustomDataSource(
+                    "org.postgresql.Driver",
+                    "postgresql://localhost:5432/myfirstdb",
+                    "Aidyninho_007",
+                    "aidyninho"
+            );
         }
         return instance;
     }
 
     @Override
     public Connection getConnection() throws SQLException {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         return DriverManager.getConnection(url);
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         return DriverManager.getConnection(url, username, password);
     }
 
