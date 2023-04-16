@@ -36,8 +36,9 @@ public class CustomDataSource implements DataSource {
             Properties properties = new Properties();
             try {
                 properties.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
-            } catch (IOException e) {
-                throw new RuntimeException();
+                Class.forName(properties.getProperty("postgres.driver"));
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
             }
             instance = new CustomDataSource(
                     properties.getProperty("postgres.driver"),
@@ -51,21 +52,11 @@ public class CustomDataSource implements DataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
         return DriverManager.getConnection(url, name, password);
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
         return DriverManager.getConnection(url, username, password);
     }
 
