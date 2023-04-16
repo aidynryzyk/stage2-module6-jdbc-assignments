@@ -32,7 +32,7 @@ public class CustomDataSource implements DataSource {
         if (instance == null) {
             instance = new CustomDataSource(
                     "org.postgresql.Driver",
-                    "postgresql://localhost:5432/myfirstdb",
+                    "jdbc:postgresql://localhost:5432/myfirstdb",
                     "Aidyninho_007",
                     "aidyninho"
             );
